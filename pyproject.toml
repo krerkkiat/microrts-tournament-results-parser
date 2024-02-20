@@ -1,0 +1,29 @@
+[project]
+name = "microrts-tournament-results-parser"
+requires-python = ">=3.8"
+description = ""
+readme = "README.md"
+license = { text = "MIT License" }
+dependencies = [
+    "pandas[performance,parquet,feather,plot,output-formatting]",
+    'importlib-metadata; python_version>="3.8"',
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { attr = "microrts_trp.__version__" }
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+markers = [
+    "interest: marks tests as interested (deselect with '-m \"not interest\"')",
+]
