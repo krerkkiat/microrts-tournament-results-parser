@@ -33,6 +33,7 @@ def main():
     )
     parser.add_argument("--full", action="store_true", help="Show full win rates table.")
     parser.add_argument("--full-bot-name", action="store_true", help="Do not shorten the name of the bot.")
+    parser.add_argument("--format", choices=("github", "latex"), default="github", help="A format for tabulate's table.")
 
     args = parser.parse_args()
     map_result = parse_map_folder(args.map_folder)
@@ -75,7 +76,7 @@ def main():
     print(
         tabulate(
             win_rates,
-            tablefmt="github",
+            tablefmt=args.format,
             headers=["Bot"] + win_rates.columns.tolist(),
             floatfmt=".2f",
         )

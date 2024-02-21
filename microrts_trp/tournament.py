@@ -75,6 +75,7 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
             ties_table = None
             row_count = 0
             for line in lines:
+                # Capture the section change.
                 match line.strip():
                     case "AIs":
                         current_section = "ai-list"
