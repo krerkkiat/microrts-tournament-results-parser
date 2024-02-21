@@ -1,9 +1,11 @@
-# microrts_trp
+# MicroRTS TRP (Tournament Result Parser)
+
+
 
 ## Installation
 
 ```console
-python -m pip install https://github.com/krerkkiat/microrts-tournament-results-parser.git
+python -m pip install https://github.com/krerkkiat/microrts-trp.git
 ```
 
 ## Usage

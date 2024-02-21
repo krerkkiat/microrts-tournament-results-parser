@@ -143,9 +143,6 @@ def parse_map_folder(path: Path | str) -> MapResult:
 
     raw_tournament_files = list(path.glob("*/tournament.csv"))
 
-    # for f in raw_tournament_files:
-    #     print(f"Found {str(f)}")
-
     tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
     map_result = MapResult(name=path.name, tournaments=tournaments)
     return map_result

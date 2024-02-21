@@ -1,10 +1,11 @@
 [project]
-name = "microrts-tournament-results-parser"
+name = "microrts-trp"
 requires-python = ">=3.8"
-description = ""
+description = "Parse and display MicroRTS' tournament.csv file."
 readme = "README.md"
 license = { text = "MIT License" }
 dependencies = [
+    "tabulate",
     "pandas[performance,parquet,feather,plot,output-formatting]",
     'importlib-metadata; python_version>="3.8"',
 ]
