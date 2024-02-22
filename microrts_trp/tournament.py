@@ -7,6 +7,12 @@ import numpy as np
 import pandas as pd
 
 
+def shorten_bot_name(name: str, max_length=35) -> str:
+    if len(name) > max_length:
+        return name[: max_length + 1] + "..."
+    else:
+        return name
+
 @dataclass
 class TournamentConfig:
     """Configuration for each run of the tournament."""
@@ -36,14 +42,14 @@ class MapResult:
         return f"MapResult[name={self.name}, win_rates={self.win_rates}]"
 
     @functools.cached_property
-    def total_iterations(self):
+    def total_iterations(self) -> int:
         total_iterations = 0
         for t in self.tournaments:
             total_iterations += t.config.iterations
         return total_iterations
 
     @functools.cached_property
-    def final_scores(self):
+    def final_scores(self) -> pd.DataFrame:
         final_scores = None
 
         for t in self.tournaments:
@@ -54,10 +60,44 @@ class MapResult:
         return final_scores
 
     @functools.cached_property
-    def win_rates(self):
+    def win_rates(self) -> pd.DataFrame:
         win_rates_table = (self.final_scores * 100.0) / self.total_iterations
 
         return win_rates_table
+    
+    def format_win_rates_for_human(self, show_detail=False, show_full_bot_name=False) -> pd.DataFrame:
+        final_scores = self.final_scores.copy()
+        final_scores["Total"] = final_scores.sum(axis=1)
+
+        win_rates = self.win_rates.copy()
+        win_rates["Win Rate"] = (
+            final_scores["Total"]
+            * 100.0
+            / (len(self.tournaments[0].ai_names) * self.total_iterations)
+        )
+
+        # Move 'Win Rate' column to the left.
+        cols = win_rates.columns.tolist()
+        cols = cols[-1:] + cols[:-1]
+        win_rates = win_rates.loc[:, cols]
+
+        win_rates = win_rates.sort_values(by="Win Rate", ascending=False)
+
+        if not show_detail:
+            # Remove the detail columns.
+            cols = win_rates.columns.tolist()
+            win_rates = win_rates.drop(columns=cols[1:])
+
+        if not show_full_bot_name:
+            # Rename the bots in the index.
+            win_rates.index = win_rates.index.map(shorten_bot_name)
+
+            # Rename the bots in the column's name.
+            col_names = win_rates.columns.values.tolist()
+            new_col_names = {name: shorten_bot_name(name) for name in col_names}
+            win_rates = win_rates.rename(columns=new_col_names)
+
+        return win_rates
 
 
 def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
