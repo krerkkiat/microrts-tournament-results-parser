@@ -5,7 +5,7 @@
 ## Installation
 
 ```console
-python -m pip install https://github.com/krerkkiat/microrts-trp.git
+python -m pip install https://github.com/krerkkiat/microrts-trp.git@v0.1.0
 ```
 
 ## Usage
@@ -20,7 +20,7 @@ Example of parsing one of the map folder from the [official result of the 2023 c
 $ git clone https://github.com/rubensolv/MicroRTS2023Competition.git
 $ cd MicroRTS2023Competition
 $ rm -rf ./FourBWorkers8x8/tournament_1  # since the it is not used in the official one.
-$ python -m microrts_trp ./FourBWorkers8x8
+$ python -m microrts_trp view ./FourBWorkers8x8
 Map: FourBWorkers8x8
 Number of AIs: 17
 | Bot                                     |   Win Rate |
