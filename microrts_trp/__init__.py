@@ -92,9 +92,11 @@ def compare_map_folders_command(map_folder_1, map_folder_2, full_bot_name, forma
     )
 
     df = pd.DataFrame()
-    df[map_folder_1] = win_rates_1["Win Rate"]
-    df[map_folder_2] = win_rates_2["Win Rate"]
-    df["Change"] = df[map_folder_2] - df[map_folder_1]
+    df[map_result_1.name] = win_rates_1["Win Rate"]
+    df[map_result_2.name] = win_rates_2["Win Rate"]
+    changes = df[map_result_2.name] - df[map_result_1.name]
+    df["Change (%)"] = (changes / df[map_result_1.name]) * 100.0
+    df = df.sort_values(by="Change (%)", ascending=False)
 
     print(
         tabulate(

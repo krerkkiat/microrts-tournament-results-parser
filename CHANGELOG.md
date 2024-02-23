@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Show percentage of winrate changed instead of the amount when `compare` command
+  is used.
+
 ## v0.1.0
 
 - Shorten the bot's name in the column as well when `--full` is not supplied.
