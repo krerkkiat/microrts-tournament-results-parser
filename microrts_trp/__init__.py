@@ -82,7 +82,6 @@ def compare_map_folders_command(map_folder_1, map_folder_2, full_bot_name, forma
     map_result_2 = parse_map_folder(map_folder_2)
 
     # Sanity checks.
-    
 
     win_rates_1 = map_result_1.format_win_rates_for_human(
         show_detail=False, show_full_bot_name=full_bot_name
@@ -103,6 +102,112 @@ def compare_map_folders_command(map_folder_1, map_folder_2, full_bot_name, forma
             df,
             tablefmt=format,
             headers=["Bot"] + df.columns.tolist(),
+            floatfmt=".2f",
+        )
+    )
+
+
+@cli.command(
+    name="focus",
+    short_help="Show focused result of one bot. How well it performs against the other bots \
+                and how well the other bot perform against it.",
+)
+@click.argument("map_folder")
+@click.argument("bot_name")
+@click.option("--full-bot-name", help="Do not shorten the name of the bot.")
+@click.option(
+    "--format",
+    type=click.Choice(["github", "latex"]),
+    show_default=True,
+    default="github",
+    help="Do not shorten the name of the bot.",
+)
+def focus(map_folder, bot_name, full_bot_name, format):
+    map_result = parse_map_folder(map_folder)
+
+    target_bot_vs_other = pd.DataFrame()
+    target_bot_vs_other[bot_name] = map_result.win_rates.loc[bot_name].transpose()
+    # Remove itself from the table.
+    target_bot_vs_other = target_bot_vs_other.drop(bot_name)
+    target_bot_vs_other = target_bot_vs_other.sort_values(by=bot_name, ascending=False)
+
+
+    print(f"Map: {map_result.name}")
+    print(f"Number of AIs: {map_result.win_rates.shape[0]}")
+    print(f"Bot of Interest: {bot_name}")
+    print(f"\nHow well {bot_name} performed against the other bots:")
+    print(
+        tabulate(
+            target_bot_vs_other,
+            tablefmt=format,
+            headers=[bot_name],
+            floatfmt=".2f",
+        )
+    )
+
+    other_vs_target_bot = pd.DataFrame()
+    other_vs_target_bot[bot_name] = map_result.win_rates[bot_name]
+    other_vs_target_bot = other_vs_target_bot.drop(bot_name)
+    other_vs_target_bot = other_vs_target_bot.sort_values(by=bot_name, ascending=False)
+    print(f"\nHow well the other bots performed against {bot_name}:")
+    print(
+        tabulate(
+            other_vs_target_bot,
+            tablefmt=format,
+            headers=["Other bots", bot_name],
+            floatfmt=".2f",
+        )
+    )
+
+@cli.command(
+    name="focus-compare",
+    short_help="Show focused result of one bot. How well it performs against the other bots \
+                and how well the other bot perform against it.",
+)
+@click.argument("map_folder_1")
+@click.argument("map_folder_2")
+@click.argument("bot_name")
+@click.option("--full-bot-name", help="Do not shorten the name of the bot.")
+@click.option(
+    "--format",
+    type=click.Choice(["github", "latex"]),
+    show_default=True,
+    default="github",
+    help="Do not shorten the name of the bot.",
+)
+def focus(map_folder_1, map_folder_2, bot_name, full_bot_name, format):
+    map_result_1 = parse_map_folder(map_folder_1)
+    map_result_2 = parse_map_folder(map_folder_2)
+
+    target_bot_vs_other = pd.DataFrame()
+    target_bot_vs_other[map_result_1.name] = map_result_1.win_rates.loc[bot_name].transpose()
+    target_bot_vs_other[map_result_2.name] = map_result_2.win_rates.loc[bot_name].transpose()
+    # Remove itself from the table.
+    target_bot_vs_other = target_bot_vs_other.drop(bot_name)
+    target_bot_vs_other = target_bot_vs_other.sort_values(by=map_result_2.name, ascending=False)
+
+    print(f"Bot of Interest: {bot_name}")
+    print(f"\nHow well {bot_name} performed against the other bots:")
+    print(
+        tabulate(
+            target_bot_vs_other,
+            tablefmt=format,
+            headers=[map_result_1.name, map_result_2.name],
+            floatfmt=".2f",
+        )
+    )
+
+    other_vs_target_bot = pd.DataFrame()
+    other_vs_target_bot[map_result_1.name] = map_result_1.win_rates[bot_name]
+    other_vs_target_bot[map_result_2.name] = map_result_2.win_rates[bot_name]
+    other_vs_target_bot = other_vs_target_bot.drop(bot_name)
+    other_vs_target_bot = other_vs_target_bot.sort_values(by=map_result_2.name, ascending=False)
+    print(f"\nHow well the other bots performed against {bot_name}:")
+    print(
+        tabulate(
+            other_vs_target_bot,
+            tablefmt=format,
+            headers=["Other bots", map_result_1.name, map_result_2.name],
             floatfmt=".2f",
         )
     )

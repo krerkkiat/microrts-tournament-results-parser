@@ -4,6 +4,9 @@
 
 - Show percentage of winrate changed instead of the amount when `compare` command
   is used.
+- Add `focus` command that shows only win rate related to the bot of interest.
+- Add `focus-compare` command that is similar to the `focus` command but also
+  allow comparision between two map folders.
 
 ## v0.1.0
 
