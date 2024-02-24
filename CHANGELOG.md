@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.1.1
+
 - Show percentage of winrate changed instead of the amount when `compare` command
   is used.
 - Add `focus` command that shows only win rate related to the bot of interest.

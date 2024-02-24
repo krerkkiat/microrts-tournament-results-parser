@@ -11,7 +11,7 @@ python -m pip install https://github.com/krerkkiat/microrts-trp.git@v0.1.0
 ## Usage
 
 ```console
-python -m microrts_trp map-folder/
+python -m microrts_trp view map-folder/
 ```
 
 Example of parsing one of the map folder from the [official result of the 2023 competition](https://github.com/rubensolv/MicroRTS2023Competition).
