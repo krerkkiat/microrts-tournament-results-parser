@@ -5,7 +5,7 @@
 ## Installation
 
 ```console
-python -m pip install https://github.com/krerkkiat/microrts-trp.git@v0.1.0
+python -m pip install git+https://github.com/krerkkiat/microrts-trp.git@v0.1.0
 ```
 
 ## Usage
