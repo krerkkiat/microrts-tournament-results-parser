@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- BREAKING CHANGE: bump python version requirement to 3.10.
+- Add map list parsing.
+- Add py.typed.
+
 ## v0.1.1
 
 - Show percentage of winrate changed instead of the amount when `compare` command

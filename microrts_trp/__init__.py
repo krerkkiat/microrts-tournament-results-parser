@@ -122,7 +122,7 @@ def compare_map_folders_command(map_folder_1, map_folder_2, full_bot_name, forma
     default="github",
     help="Do not shorten the name of the bot.",
 )
-def focus(map_folder, bot_name, full_bot_name, format):
+def focus_command(map_folder, bot_name, full_bot_name, format):
     map_result = parse_map_folder(map_folder)
 
     target_bot_vs_other = pd.DataFrame()
@@ -175,7 +175,7 @@ def focus(map_folder, bot_name, full_bot_name, format):
     default="github",
     help="Do not shorten the name of the bot.",
 )
-def focus(map_folder_1, map_folder_2, bot_name, full_bot_name, format):
+def focus_compare_command(map_folder_1, map_folder_2, bot_name, full_bot_name, format):
     map_result_1 = parse_map_folder(map_folder_1)
     map_result_2 = parse_map_folder(map_folder_2)
 

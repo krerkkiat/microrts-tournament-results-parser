@@ -18,6 +18,8 @@ class TournamentConfig:
     """Configuration for each run of the tournament."""
 
     iterations: int
+    max_game_length: int
+    time_budget: int
 
 
 @dataclass
@@ -25,6 +27,7 @@ class TournamentResult:
     """Representation of the tournament.csv file."""
 
     ai_names: list[str]
+    maps: list[str]
     config: TournamentConfig
     wins_table: pd.DataFrame
     ties_table: pd.DataFrame
@@ -110,10 +113,11 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
 
             current_section: str = ""
             ai_names: list[str] = []
+            maps: list[str] = []
             config = dict()
-            wins_table = None
-            ties_table = None
-            row_count = 0
+            wins_table: Optional[np.ndarray] = None
+            ties_table: Optional[np.ndarray] = None
+            row_count: int = 0
             for line in lines:
                 # Capture the section change.
                 match line.strip():
@@ -138,19 +142,26 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
                         continue
 
                 tokens = line.split("\t")
-                if len(tokens) > 1 and tokens[0] == "iterations":
-                    config["iterations"] = int(tokens[1])
+                if len(tokens) > 1:
+                    if tokens[0] == "iterations":
+                        config["iterations"] = int(tokens[1])
+                    elif len(tokens) > 1 and tokens[0] == "maxGameLength":
+                        config["max_game_length"] = int(tokens[1])
+                    elif len(tokens) > 1 and tokens[0] == "timeBudget":
+                        config["time_budget"] = int(tokens[1])
 
                 match current_section:
+                    case "map-list":
+                        maps.append(line.strip())
                     case "ai-list":
                         ai_names.append(line.strip())
                     case "wins-table":
-                        tokens = [
+                        wins = [
                             int(t)
                             for t in line.strip().split("\t")
                             if len(t.strip()) != 0
                         ]
-                        wins_table[row_count, :] = tokens
+                        wins_table[row_count, :] = wins
                         row_count += 1
                     case "ties-table":
                         tokens = [
@@ -163,6 +174,7 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
 
             return TournamentResult(
                 ai_names,
+                maps,
                 TournamentConfig(**config),
                 pd.DataFrame(data=wins_table, columns=ai_names, index=ai_names),
                 pd.DataFrame(data=ties_table, columns=ai_names, index=ai_names),
@@ -179,10 +191,12 @@ def parse_map_folder(path: Path | str) -> MapResult:
 
     if not path.exists():
         raise RuntimeError(f"path '{str(path)}' does not exist")
-    if not path.is_dir():
-        raise RuntimeError(f"path '{str(path)}' is not a folder")
 
-    raw_tournament_files = list(path.glob("*/tournament.csv"))
+    if path.is_file():
+        # Assume that the tournament.csv is viewed directly.
+        raw_tournament_files = [path]
+    elif path.is_dir():
+        raw_tournament_files = list(path.glob("*/tournament.csv"))
 
     tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
     map_result = MapResult(name=path.name, tournaments=tournaments)
