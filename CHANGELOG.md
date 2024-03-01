@@ -5,6 +5,8 @@
 - BREAKING CHANGE: bump python version requirement to 3.10.
 - Add map list parsing.
 - Add py.typed.
+- BREAKING CHANGE: move all command for click into their own files.
+  Move public API functions to `__init__.py`.
 
 ## v0.1.1
 

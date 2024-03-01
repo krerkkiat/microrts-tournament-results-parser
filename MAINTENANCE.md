@@ -20,6 +20,8 @@ To locally install
 python -m pip install -e ".[dev,typ]" --config-settings editable_mode=compat
 ```
 
+The `compat` mode is needed, so mypy can function.
+
 This is because, mypy does not work with the new editable implementation.
 
 ## Testing
