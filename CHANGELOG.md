@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.2.0
+
 - BREAKING CHANGE: bump python version requirement to 3.10.
 - Add map list parsing.
 - Add py.typed.

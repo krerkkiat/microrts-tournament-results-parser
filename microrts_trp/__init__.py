@@ -4,7 +4,7 @@ Analyze tournament results.
 Implement the same calculation as the official tournament result analysis.
 """
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 from pathlib import Path
 from dataclasses import dataclass
