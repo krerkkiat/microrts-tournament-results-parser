@@ -25,6 +25,7 @@ class TournamentResult:
     """Representation of the tournament.csv file."""
 
     ai_names: list[str]
+    maps: list[str]
     config: TournamentConfig
     wins_table: pd.DataFrame
     ties_table: pd.DataFrame
@@ -110,6 +111,7 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
 
             current_section: str = ""
             ai_names: list[str] = []
+            maps: list[str] = []
             config = dict()
             wins_table = None
             ties_table = None
@@ -140,7 +142,9 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
                 if len(tokens) > 1 and tokens[0] == "iterations":
                     config["iterations"] = int(tokens[1])
 
-                if current_section == "ai-list":
+                if current_section == "map-list":
+                    maps.append(line.strip())
+                elif current_section == "ai-list":
                     ai_names.append(line.strip())
                 elif current_section == "wins-table":
                     tokens = [
@@ -161,6 +165,7 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
 
             return TournamentResult(
                 ai_names,
+                maps,
                 TournamentConfig(**config),
                 pd.DataFrame(data=wins_table, columns=ai_names, index=ai_names),
                 pd.DataFrame(data=ties_table, columns=ai_names, index=ai_names),
@@ -178,15 +183,19 @@ def parse_map_folder(path: Path | str) -> MapResult:
     if not path.exists():
         raise RuntimeError(f"path '{str(path)}' does not exist")
     
+    map_name = "tournament.csv"
     if path.name == "tournament.csv":
         raw_tournament_files = [path]
         tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
-        map_result = MapResult(name=path.name, tournaments=tournaments)
+        if len(tournaments) != 0 and tournaments[0] is not None:
+            map_name = tournaments[0].maps[0]
+
     elif path.is_dir():
+        map_name = path.name
         raw_tournament_files = list(path.glob("*/tournament.csv"))
         tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
-        map_result = MapResult(name=path.name, tournaments=tournaments)
     else:
         raise RuntimeError(f"path '{str(path)}' is not a folder and it is not the 'tournament.csv' file itself.")
 
+    map_result = MapResult(name=map_name, tournaments=tournaments)
     return map_result

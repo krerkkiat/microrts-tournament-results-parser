@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Fix `match` statement being used in Python 3.8.
+- Add direct parsing of `tournament.csv` file.
+- Backport map list parsing from v0.2.0.
+
 ## v0.1.1
 
 - Show percentage of winrate changed instead of the amount when `compare` command
