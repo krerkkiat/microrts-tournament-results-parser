@@ -177,11 +177,16 @@ def parse_map_folder(path: Path | str) -> MapResult:
 
     if not path.exists():
         raise RuntimeError(f"path '{str(path)}' does not exist")
-    if not path.is_dir():
-        raise RuntimeError(f"path '{str(path)}' is not a folder")
+    
+    if path.name == "tournament.csv":
+        raw_tournament_files = [path]
+        tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
+        map_result = MapResult(name=path.name, tournaments=tournaments)
+    elif path.is_dir():
+        raw_tournament_files = list(path.glob("*/tournament.csv"))
+        tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
+        map_result = MapResult(name=path.name, tournaments=tournaments)
+    else:
+        raise RuntimeError(f"path '{str(path)}' is not a folder and it is not the 'tournament.csv' file itself.")
 
-    raw_tournament_files = list(path.glob("*/tournament.csv"))
-
-    tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
-    map_result = MapResult(name=path.name, tournaments=tournaments)
     return map_result
