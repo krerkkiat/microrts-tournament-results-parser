@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v0.1.3
+
+- Support a path to `tournament_{N}` folder.
+
 ## v0.1.2
 
 - Fix `match` statement being used in Python 3.8.
