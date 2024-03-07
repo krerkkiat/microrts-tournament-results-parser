@@ -4,7 +4,7 @@ Analyze tournament results.
 Implement the same calculation as the official tournament result analysis.
 """
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 import click
 import pandas as pd

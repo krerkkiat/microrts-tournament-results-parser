@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.1.2
+
 - Fix `match` statement being used in Python 3.8.
 - Add direct parsing of `tournament.csv` file.
 - Backport map list parsing from v0.2.0.
