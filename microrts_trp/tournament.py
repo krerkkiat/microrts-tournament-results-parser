@@ -116,50 +116,48 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
             row_count = 0
             for line in lines:
                 # Capture the section change.
-                match line.strip():
-                    case "AIs":
-                        current_section = "ai-list"
-                        continue
-                    case "maps":
-                        current_section = "map-list"
-                        continue
-                    case "Wins:":
-                        current_section = "wins-table"
-                        wins_table = np.zeros((len(ai_names), len(ai_names)))
-                        row_count = 0
-                        continue
-                    case "Ties:":
-                        current_section = "ties-table"
-                        ties_table = np.zeros((len(ai_names), len(ai_names)))
-                        row_count = 0
-                        continue
-                    case "Average Game Length:":
-                        current_section = "avg-game-length-table"
-                        continue
+                if line.strip() == "AIs":
+                    current_section = "ai-list"
+                    continue
+                elif line.strip() == "maps":
+                    current_section = "map-list"
+                    continue
+                elif line.strip() == "Wins:":
+                    current_section = "wins-table"
+                    wins_table = np.zeros((len(ai_names), len(ai_names)))
+                    row_count = 0
+                    continue
+                elif line.strip() == "Ties:":
+                    current_section = "ties-table"
+                    ties_table = np.zeros((len(ai_names), len(ai_names)))
+                    row_count = 0
+                    continue
+                elif line.strip() == "Average Game Length:":
+                    current_section = "avg-game-length-table"
+                    continue
 
                 tokens = line.split("\t")
                 if len(tokens) > 1 and tokens[0] == "iterations":
                     config["iterations"] = int(tokens[1])
 
-                match current_section:
-                    case "ai-list":
-                        ai_names.append(line.strip())
-                    case "wins-table":
-                        tokens = [
-                            int(t)
-                            for t in line.strip().split("\t")
-                            if len(t.strip()) != 0
-                        ]
-                        wins_table[row_count, :] = tokens
-                        row_count += 1
-                    case "ties-table":
-                        tokens = [
-                            int(t)
-                            for t in line.strip().split("\t")
-                            if len(t.strip()) != 0
-                        ]
-                        ties_table[row_count, :] = tokens
-                        row_count += 1
+                if current_section == "ai-list":
+                    ai_names.append(line.strip())
+                elif current_section == "wins-table":
+                    tokens = [
+                        int(t)
+                        for t in line.strip().split("\t")
+                        if len(t.strip()) != 0
+                    ]
+                    wins_table[row_count, :] = tokens
+                    row_count += 1
+                elif current_section == "ties-table":
+                    tokens = [
+                        int(t)
+                        for t in line.strip().split("\t")
+                        if len(t.strip()) != 0
+                    ]
+                    ties_table[row_count, :] = tokens
+                    row_count += 1
 
             return TournamentResult(
                 ai_names,
