@@ -193,6 +193,12 @@ def parse_map_folder(path: Union[Path, str]) -> MapResult:
     elif path.is_dir():
         map_name = path.name
         raw_tournament_files = list(path.glob("*/tournament.csv"))
+        if len(raw_tournament_files) == 0:
+            # Assume that a path to tournamement_N is used.
+            raw_tournament_files = list(path.glob("./tournament.csv"))
+        
+        if len(raw_tournament_files) == 0:
+            raise RuntimeError("[error]: no tournament.csv file found.")
         tournaments = [parse_tournament_file(f) for f in raw_tournament_files]
     else:
         raise RuntimeError(f"path '{str(path)}' is not a folder and it is not the 'tournament.csv' file itself.")
