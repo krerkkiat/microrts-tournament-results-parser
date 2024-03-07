@@ -1,6 +1,6 @@
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List, Union
 import functools
 
 import numpy as np
@@ -24,8 +24,8 @@ class TournamentConfig:
 class TournamentResult:
     """Representation of the tournament.csv file."""
 
-    ai_names: list[str]
-    maps: list[str]
+    ai_names: List[str]
+    maps: List[str]
     config: TournamentConfig
     wins_table: pd.DataFrame
     ties_table: pd.DataFrame
@@ -37,7 +37,7 @@ class TournamentResult:
 @dataclass
 class MapResult:
     name: str
-    tournaments: list[TournamentResult]
+    tournaments: List[TournamentResult]
 
     def __str__(self):
         return f"MapResult[name={self.name}, win_rates={self.win_rates}]"
@@ -101,7 +101,7 @@ class MapResult:
         return win_rates
 
 
-def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
+def parse_tournament_file(path: Union[Path, str]) -> Optional[TournamentResult]:
     if isinstance(path, str):
         path = Path(path)
 
@@ -110,8 +110,8 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
             lines = in_f.readlines()
 
             current_section: str = ""
-            ai_names: list[str] = []
-            maps: list[str] = []
+            ai_names: List[str] = []
+            maps: List[str] = []
             config = dict()
             wins_table = None
             ties_table = None
@@ -174,7 +174,7 @@ def parse_tournament_file(path: Path | str) -> Optional[TournamentResult]:
             return None
 
 
-def parse_map_folder(path: Path | str) -> MapResult:
+def parse_map_folder(path: Union[Path, str]) -> MapResult:
     if isinstance(path, str):
         path = Path(path)
 
